@@ -12,12 +12,10 @@ folium==0.16.0
 # Machine Learning
 scikit-learn==1.4.2
 xgboost==2.0.3
-lightgbm==4.3.0
 shap==0.45.0
 
 # Time Series
 statsmodels==0.14.2
-prophet==1.1.5
 
 # Notebook & Report
 jupyter==1.0.0

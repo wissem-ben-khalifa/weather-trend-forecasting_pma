@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Trend Forecasting — PM Accelerator Assessment</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.85;
+            margin-top: 8px;
+        }
+
+        .mission-box {
+            background: linear-gradient(135deg, #e8f4fd, #d6eaf8);
+            border-left: 5px solid #2980b9;
+            margin: 40px auto;
+            max-width: 900px;
+            padding: 30px 35px;
+            border-radius: 8px;
+        }
+
+        .mission-box h2 {
+            color: #1a5276;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mission-box p {
+            color: #1a5276;
+            font-size: 1.05em;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 40px 60px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 35px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .section h2 {
+            font-size: 1.5em;
+            color: #1a1a2e;
+            border-bottom: 3px solid #2980b9;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            font-size: 1.15em;
+            color: #2980b9;
+            margin: 20px 0 10px;
+        }
+
+        .section p {
+            margin-bottom: 12px;
+            color: #444;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .stat-card .label {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:nth-child(even) { background: #f8f9fa; }
+        tr:hover { background: #eaf4fb; }
+
+        .best {
+            color: #27ae60;
+            font-weight: 700;
+        }
+
+        .poor {
+            color: #e74c3c;
+        }
+
+        .finding-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .finding-list li {
+            padding: 10px 0 10px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            color: #444;
+        }
+
+        .finding-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2980b9;
+            font-weight: 700;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #eaf4fb;
+            color: #1a5276;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            margin: 3px;
+            border: 1px solid #aed6f1;
+        }
+
+        .notebook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .notebook-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 18px 20px;
+            border-left: 4px solid #2980b9;
+        }
+
+        .notebook-card .nb-number {
+            font-size: 0.8em;
+            color: #2980b9;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .notebook-card .nb-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 5px 0;
+        }
+
+        .notebook-card .nb-desc {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .highlight-box {
+            background: #eafaf1;
+            border-left: 4px solid #27ae60;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+            color: #1e8449;
+            font-weight: 500;
+        }
+
+        .warning-box {
+            background: #fef9e7;
+            border-left: 4px solid #f39c12;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+            color: #7d6608;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>Weather Trend Forecasting</h1>
+    <p>Advanced Data Science Analysis — Global Weather Repository</p>
+    <p style="margin-top:6px; font-size:0.95em; opacity:0.7;">
+        PM Accelerator AI Engineer Internship — Cohort 9 — Wissem Ben Khalifa
+    </p>
+</div>
+
+<!-- PM ACCELERATOR MISSION -->
+<div class="mission-box">
+    <h2>PM Accelerator Mission</h2>
+    <p>
+        PM Accelerator is on a mission to empower the next generation of product leaders
+        by providing real-world experience, mentorship, and community. Through hands-on
+        projects led by senior PMs from Google, Amazon, and Apple, we bridge the gap
+        between education and industry.
+    </p>
+</div>
+
+<div class="container">
+
+    <!-- DATASET OVERVIEW -->
+    <div class="section">
+        <h2>Dataset Overview</h2>
+        <p>
+            The Global Weather Repository provides daily weather observations for cities
+            around the world, covering over 40 features including temperature, humidity,
+            wind, precipitation, air quality, and astronomical data. The dataset spans
+            from May 2024 to June 2026.
+        </p>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number">144,822</div>
+                <div class="label">Total Rows</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">41</div>
+                <div class="label">Original Features</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">211</div>
+                <div class="label">Countries</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">6</div>
+                <div class="label">Continents</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">2 yrs</div>
+                <div class="label">Date Range</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">0</div>
+                <div class="label">Missing Values</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTEBOOKS -->
+    <div class="section">
+        <h2>Project Structure</h2>
+        <p>The analysis is organized across 9 notebooks, each covering a distinct phase.</p>
+        <div class="notebook-grid">
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 01</div>
+                <div class="nb-title">Data Cleaning</div>
+                <div class="nb-desc">Missing values, outliers, datetime parsing, continent mapping</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 02</div>
+                <div class="nb-title">Basic EDA</div>
+                <div class="nb-desc">Temperature, precipitation, correlation heatmap, seasonal patterns</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 03</div>
+                <div class="nb-title">Anomaly Detection</div>
+                <div class="nb-desc">Isolation Forest, LOF, time series decomposition</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 04</div>
+                <div class="nb-title">Forecasting Models</div>
+                <div class="nb-desc">ARIMA, Linear Regression, XGBoost with full evaluation</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 05</div>
+                <div class="nb-title">Ensemble Models</div>
+                <div class="nb-desc">Simple average, weighted average, stacking with Ridge</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 06</div>
+                <div class="nb-title">Climate Analysis</div>
+                <div class="nb-desc">Long-term trends, continent comparison, climate zones</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 07</div>
+                <div class="nb-title">Environmental Impact</div>
+                <div class="nb-desc">Air quality correlation with weather parameters</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 08</div>
+                <div class="nb-title">Feature Importance</div>
+                <div class="nb-desc">Random Forest, XGBoost, SHAP values, Permutation importance</div>
+            </div>
+            <div class="notebook-card">
+                <div class="nb-number">Notebook 09</div>
+                <div class="nb-title">Spatial Analysis</div>
+                <div class="nb-desc">Choropleth maps, heatmaps, K-Means clustering</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DATA CLEANING -->
+    <div class="section">
+        <h2>1. Data Cleaning and Preprocessing</h2>
+        <p>
+            The raw dataset contained redundant imperial-unit columns, inconsistent
+            country names in multiple languages, and extreme outlier values across
+            key weather metrics.
+        </p>
+        <h3>Steps Taken</h3>
+        <ul class="finding-list">
+            <li>Removed 8 redundant imperial-unit columns (Fahrenheit, mph, inches)</li>
+            <li>Parsed last_updated datetime and extracted year, month, day, hour, season</li>
+            <li>Capped outliers using IQR winsorizing on 9 key numeric columns</li>
+            <li>Mapped 211 countries to continents including multilingual names (French, German, Arabic, Chinese, Cyrillic)</li>
+            <li>Verified 0 missing values and 0 duplicates in final dataset</li>
+        </ul>
+        <div class="highlight-box">
+            Final cleaned dataset: 144,822 rows x 33 columns with 0 missing values
+        </div>
+    </div>
+
+    <!-- EDA -->
+    <div class="section">
+        <h2>2. Exploratory Data Analysis</h2>
+        <h3>Temperature</h3>
+        <p>
+            Global average temperature is approximately 21°C with a right-skewed
+            distribution. Africa and South America are the warmest continents.
+            Russia, Canada, and Nordic nations are consistently the coldest.
+        </p>
+        <h3>Precipitation</h3>
+        <p>
+            Precipitation is highly right-skewed — the majority of observations
+            record 0mm. Oceania and South America show the highest average
+            precipitation by continent.
+        </p>
+        <h3>Key Correlations</h3>
+        <ul class="finding-list">
+            <li>Temperature and feels_like_celsius: near-perfect correlation (r=0.99)</li>
+            <li>Temperature and UV index: strong positive correlation</li>
+            <li>Temperature and humidity: moderate negative correlation</li>
+            <li>PM2.5 and PM10: strong positive correlation (same pollution source)</li>
+            <li>Wind speed and PM2.5: negative correlation (wind disperses pollutants)</li>
+        </ul>
+    </div>
+
+    <!-- ANOMALY DETECTION -->
+    <div class="section">
+        <h2>3. Anomaly Detection</h2>
+        <p>
+            Two unsupervised anomaly detection algorithms were applied to identify
+            extreme weather events across the dataset.
+        </p>
+        <h3>Isolation Forest (Full Dataset)</h3>
+        <p>
+            Applied to all 144,822 rows using 8 weather features. Detected 4,345
+            anomalies representing 3% of the dataset.
+        </p>
+        <h3>Local Outlier Factor (Sample)</h3>
+        <p>
+            Applied to a 20,000-row sample for computational efficiency.
+            Confirmed the 3% anomaly rate independently.
+        </p>
+        <h3>Anomaly Profile vs Normal Observations</h3>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>Normal</th>
+                <th>Anomaly</th>
+                <th>Difference</th>
+            </tr>
+            <tr>
+                <td>Temperature (C)</td>
+                <td>21.37</td>
+                <td>20.51</td>
+                <td>-0.86</td>
+            </tr>
+            <tr>
+                <td>Humidity (%)</td>
+                <td>67.06</td>
+                <td>58.05</td>
+                <td>-9.01</td>
+            </tr>
+            <tr>
+                <td>Pressure (mb)</td>
+                <td>1014.19</td>
+                <td>1009.15</td>
+                <td>-5.04</td>
+            </tr>
+            <tr>
+                <td>Wind (kph)</td>
+                <td>12.54</td>
+                <td class="poor">18.66</td>
+                <td>+6.12 (+49%)</td>
+            </tr>
+            <tr>
+                <td>PM2.5</td>
+                <td>19.08</td>
+                <td class="poor">38.04</td>
+                <td>+18.96 (+99%)</td>
+            </tr>
+        </table>
+        <div class="warning-box">
+            Anomalies are characterized by significantly higher wind speeds (+49%)
+            and doubled PM2.5 pollution levels, consistent with storm events and
+            industrial pollution episodes.
+        </div>
+    </div>
+
+    <!-- FORECASTING -->
+    <div class="section">
+        <h2>4. Forecasting Models</h2>
+        <p>
+            Three models were trained on daily global average temperature with a
+            60-day test set. Lag features (1, 7, 14, 30 days) and rolling statistics
+            were engineered for the ML models.
+        </p>
+        <table>
+            <tr>
+                <th>Model</th>
+                <th>MAE</th>
+                <th>RMSE</th>
+                <th>R2</th>
+                <th>MAPE</th>
+            </tr>
+            <tr>
+                <td>ARIMA(5,1,2)</td>
+                <td class="poor">2.1427</td>
+                <td class="poor">2.4541</td>
+                <td class="poor">-3.1300</td>
+                <td class="poor">10.12%</td>
+            </tr>
+            <tr>
+                <td>Linear Regression</td>
+                <td>0.2967</td>
+                <td>0.3579</td>
+                <td>0.9122</td>
+                <td>1.45%</td>
+            </tr>
+            <tr>
+                <td>XGBoost</td>
+                <td class="best">0.2870</td>
+                <td class="best">0.3639</td>
+                <td class="best">0.9092</td>
+                <td class="best">1.39%</td>
+            </tr>
+        </table>
+        <div class="warning-box">
+            ARIMA's negative R2 reveals that classical statistical models struggle
+            with globally-aggregated temperature data. The signal lacks the
+            autocorrelation structure ARIMA requires, while ML models with
+            lag features capture the pattern effectively.
+        </div>
+    </div>
+
+    <!-- ENSEMBLE -->
+    <div class="section">
+        <h2>5. Ensemble Models</h2>
+        <p>
+            Three ensemble strategies were tested: simple average, inverse-MAE
+            weighted average, and Ridge regression stacking.
+        </p>
+        <table>
+            <tr>
+                <th>Model</th>
+                <th>MAE</th>
+                <th>RMSE</th>
+                <th>R2</th>
+                <th>MAPE</th>
+            </tr>
+            <tr>
+                <td>ARIMA</td>
+                <td class="poor">2.1427</td>
+                <td class="poor">2.4541</td>
+                <td class="poor">-3.1300</td>
+                <td class="poor">10.12%</td>
+            </tr>
+            <tr>
+                <td>Linear Regression</td>
+                <td>0.2967</td>
+                <td>0.3579</td>
+                <td>0.9122</td>
+                <td>1.45%</td>
+            </tr>
+            <tr>
+                <td>XGBoost</td>
+                <td class="best">0.2870</td>
+                <td class="best">0.3639</td>
+                <td class="best">0.9092</td>
+                <td class="best">1.39%</td>
+            </tr>
+            <tr>
+                <td>Simple Average Ensemble</td>
+                <td class="poor">0.7711</td>
+                <td class="poor">0.9093</td>
+                <td>0.4330</td>
+                <td class="poor">3.64%</td>
+            </tr>
+            <tr>
+                <td>Weighted Average Ensemble</td>
+                <td>0.3165</td>
+                <td>0.3901</td>
+                <td>0.8957</td>
+                <td>1.52%</td>
+            </tr>
+        </table>
+        <div class="highlight-box">
+            The weighted ensemble assigned approximately 98% of its weight to
+            Linear Regression and XGBoost combined, effectively neutralizing
+            ARIMA's poor performance. A 2-model ensemble of LR and XGBoost
+            would likely outperform all approaches tested.
+        </div>
+    </div>
+
+    <!-- CLIMATE -->
+    <div class="section">
+        <h2>6. Climate Analysis</h2>
+        <ul class="finding-list">
+            <li>A slight warming trend was detected over the 2-year observation period</li>
+            <li>Africa and South America are the warmest continents on average</li>
+            <li>Europe shows the strongest seasonal temperature variation</li>
+            <li>Southern hemisphere seasons are inverted relative to the Northern hemisphere</li>
+            <li>Tropical zones average 5 to 10 degrees warmer than temperate zones</li>
+            <li>Polar regions show the highest temperature variability month to month</li>
+        </ul>
+    </div>
+
+    <!-- ENVIRONMENTAL -->
+    <div class="section">
+        <h2>7. Environmental Impact</h2>
+        <ul class="finding-list">
+            <li>Asia has significantly higher PM2.5 and PM10 levels than any other continent</li>
+            <li>Wind speed has a strong negative correlation with PM2.5 — wind disperses pollutants</li>
+            <li>Humidity has a positive correlation with PM2.5 — moisture traps particles near ground level</li>
+            <li>Visibility decreases sharply as PM2.5 increases</li>
+            <li>The majority of global observations fall in the Good or Moderate AQI category</li>
+            <li>Carbon Monoxide shows seasonal peaks consistent with heating and industrial activity</li>
+        </ul>
+    </div>
+
+    <!-- FEATURE IMPORTANCE -->
+    <div class="section">
+        <h2>8. Feature Importance</h2>
+        <p>
+            Four methods were used to rank feature importance for temperature prediction:
+            Random Forest, XGBoost, Permutation Importance, and SHAP values.
+            All four methods produced consistent rankings.
+        </p>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Feature</th>
+                <th>Reason</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td class="best">feels_like_celsius</td>
+                <td>Direct temperature proxy — accounts for wind chill and humidity</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>humidity</td>
+                <td>Strongest independent predictor after feels_like</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>wind_kph</td>
+                <td>Affects perceived and actual temperature through convection</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>uv_index</td>
+                <td>Higher UV indicates stronger solar radiation and heating</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>pressure_mb</td>
+                <td>Low pressure systems correlate with warmer unstable air masses</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SPATIAL -->
+    <div class="section">
+        <h2>9. Spatial Analysis</h2>
+        <ul class="finding-list">
+            <li>Interactive choropleth maps confirm Middle East and Sub-Saharan Africa as hottest regions</li>
+            <li>South and East Asia dominate global PM2.5 pollution maps</li>
+            <li>Folium heatmap shows a clear temperature gradient from equator to poles</li>
+            <li>K-Means clustering (k=5) identified 5 distinct global weather profiles</li>
+            <li>Strong negative correlation confirmed between latitude and average temperature</li>
+            <li>Weather stations in tropical latitudes show the least seasonal variation</li>
+        </ul>
+    </div>
+
+    <!-- KEY FINDINGS -->
+    <div class="section">
+        <h2>Key Findings</h2>
+        <ul class="finding-list">
+            <li>XGBoost with lag features significantly outperforms classical ARIMA for global temperature forecasting</li>
+            <li>Anomalous weather events show doubled PM2.5 levels and 49% higher wind speeds vs normal days</li>
+            <li>Asia has substantially worse air quality than all other continents across every metric</li>
+            <li>Temperature is primarily driven by seasonal timing and humidity rather than pressure or wind alone</li>
+            <li>Ensemble models are only effective when base models have comparable performance levels</li>
+            <li>Global weather stations cluster into 5 distinct climate profiles that align with known climate zones</li>
+        </ul>
+    </div>
+
+    <!-- TECH STACK -->
+    <div class="section">
+        <h2>Tech Stack</h2>
+        <div>
+            <span class="tag">Python 3.11</span>
+            <span class="tag">pandas</span>
+            <span class="tag">numpy</span>
+            <span class="tag">scikit-learn</span>
+            <span class="tag">xgboost</span>
+            <span class="tag">statsmodels</span>
+            <span class="tag">shap</span>
+            <span class="tag">matplotlib</span>
+            <span class="tag">seaborn</span>
+            <span class="tag">plotly</span>
+            <span class="tag">folium</span>
+            <span class="tag">scipy</span>
+            <span class="tag">jupyter</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <p>Weather Trend Forecasting — PM Accelerator AI Engineer Internship Assessment</p>
+    <p style="margin-top:6px; opacity:0.6;">
+        Wissem Ben Khalifa — Cohort 9 — 2026
+    </p>
+</div>
+
+</body>
+</html>
